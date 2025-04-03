@@ -4,11 +4,8 @@
     }
 
     function getBasicInfo() {
-        let name = document.querySelector('h1')?.innerText || "Không tìm thấy tên";
         let posts = document.querySelectorAll('[role="article"]').length;
-        let images = document.querySelectorAll('img').length;
-        let videos = document.querySelectorAll('video').length;
-        return `👤 Tên: ${name}\n📸 Ảnh: ${images}\n🎥 Video: ${videos}\n📝 Bài viết: ${posts}`;
+        return `📝 Số Bài viết: ${posts}`;
     }
 
     function toggleDarkMode() {
@@ -30,6 +27,7 @@
         <h2 style="text-align:center;">🚀 Facebook Tool 📌</h2>
         <p>🔍 <b>ID Facebook:</b> ${getUserID()}</p>
         <p>ℹ️ <b>Thông tin cơ bản:</b><br> ${getBasicInfo()}</p>
+        <p>😁😁 <b> Tool V1 Code Bởi Hoàng Mạnh Phước</b> </p>
         <button onclick="toggleDarkMode()" style="width:100%; margin-top:10px; padding:10px; background:#007bff; color:white; border:none; cursor:pointer;">🌓 Đổi giao diện sáng/tối</button>
         <button onclick="changeLanguage('en_US')" style="width:100%; margin-top:10px; padding:10px; background:#28a745; color:white; border:none; cursor:pointer;">🌍 Đổi ngôn ngữ sang Tiếng Anh</button>
         <button onclick="changeLanguage('vi_VN')" style="width:100%; margin-top:10px; padding:10px; background:#ffc107; color:black; border:none; cursor:pointer;">🇻🇳 Đổi ngôn ngữ sang Tiếng Việt</button>
