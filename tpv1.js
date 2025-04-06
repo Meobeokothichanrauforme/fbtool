@@ -1,56 +1,45 @@
 javascript:(function(){
-  if (!window.Matter) {
-    let s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.14.2/matter.min.js';
-    s.onload = startGravity;
-    document.head.appendChild(s);
-  } else {
-    startGravity();
+  const slogans = [
+    "Trắng như tâm hồn người yêu cũ!",
+    "Kem đánh răng thơm như lời tỏ tình!",
+    "Ngậm 1 lần – sạch cả kiếp!",
+    "Đánh xong muốn cắn crush liền!",
+    "Sạch từ răng tới tâm hồn!",
+    "Cười toáng mà không lo hôi miệng!"
+  ];
+
+  function createPopup() {
+    const popup = document.createElement("div");
+    popup.style.position = "fixed";
+    popup.style.top = Math.random() * 80 + "%";
+    popup.style.left = Math.random() * 80 + "%";
+    popup.style.zIndex = 9999;
+    popup.style.background = "#fff";
+    popup.style.border = "2px solid #000";
+    popup.style.padding = "20px";
+    popup.style.boxShadow = "0 0 20px red";
+    popup.style.fontSize = "18px";
+    popup.style.maxWidth = "200px";
+    popup.style.transform = `rotate(${Math.random()*20-10}deg)`;
+    popup.style.animation = "shake 0.5s infinite alternate";
+
+    const slogan = slogans[Math.floor(Math.random() * slogans.length)];
+    popup.innerHTML = `
+      <div><b>${slogan}</b></div>
+      <button style="margin-top:10px;" onclick="this.parentElement.remove()">Tắt quảng cáo</button>
+    `;
+
+    document.body.appendChild(popup);
   }
 
-  function startGravity() {
-    const { Engine, Render, World, Bodies, Body, Composite, Events } = Matter;
+  setInterval(createPopup, 10000);
 
-    let engine = Engine.create();
-    let render = Render.create({
-      element: document.body,
-      engine: engine,
-      options: {
-        width: window.innerWidth,
-        height: window.innerHeight,
-        wireframes: false,
-        background: 'transparent'
-      }
-    });
-
-    document.body.querySelectorAll("*").forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        let x = rect.left + rect.width / 2;
-        let y = rect.top + rect.height / 2;
-        let body = Bodies.rectangle(x, y, rect.width, rect.height, {
-          restitution: 0.4,
-          friction: 0.8
-        });
-        World.add(engine.world, body);
-
-        el.style.position = 'fixed';
-        el.style.left = rect.left + 'px';
-        el.style.top = rect.top + 'px';
-        el.style.margin = 0;
-        el.style.zIndex = 9999;
-
-        Events.on(engine, "beforeUpdate", () => {
-          el.style.left = body.position.x - rect.width / 2 + "px";
-          el.style.top = body.position.y - rect.height / 2 + "px";
-        });
-      }
-    });
-
-    const ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight + 50, window.innerWidth, 100, { isStatic: true });
-    World.add(engine.world, ground);
-
-    Engine.run(engine);
-    Render.run(render);
-  }
+  const style = document.createElement("style");
+  style.innerHTML = `
+    @keyframes shake {
+      from { transform: translate(0, 0) rotate(0deg); }
+      to { transform: translate(5px, 5px) rotate(2deg); }
+    }
+  `;
+  document.head.appendChild(style);
 })();
