@@ -1,39 +1,67 @@
 javascript:(function(){
   const trollURL = "https://meobeokothichanrauforme.github.io/fbtool/troll.webp";
 
-  // CSS Hiệu ứng
-  const style = document.createElement('style');
+  // Thêm CSS hiệu ứng
+  const style = document.createElement("style");
   style.innerHTML = `
-    * { animation: flashText 0.3s infinite alternate; }
-    @keyframes flashText { color: red; background: yellow; }
+    @keyframes flash { 0% {color: red;} 50% {color: yellow;} 100% {color: lime;} }
+    @keyframes jump { 0% {transform: translateY(0);} 50% {transform: translateY(-10px);} 100% {transform: translateY(0);} }
+    .chaos-char {
+      display: inline-block;
+      animation: flash 0.2s infinite, jump 0.3s infinite;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
     .troll-img {
       position: fixed;
-      width: 100px;
+      width: 60px;
       z-index: 9999;
-      animation: fly 3s linear infinite;
-    }
-    @keyframes fly {
-      0% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-100px) rotate(180deg); }
-      100% { transform: translateY(0) rotate(360deg); }
+      pointer-events: none;
+      transition: top 0.5s, left 0.5s;
     }
   `;
   document.head.appendChild(style);
 
-  // Troll face bay loạn
-  for (let i = 0; i < 10; i++) {
+  // Tách từng chữ và thêm hiệu ứng
+  function wrapChars(node) {
+    if (node.nodeType === 3 && node.nodeValue.trim()) {
+      const frag = document.createDocumentFragment();
+      [...node.nodeValue].forEach(char => {
+        const span = document.createElement("span");
+        span.className = "chaos-char";
+        span.textContent = char;
+        frag.appendChild(span);
+      });
+      node.parentNode.replaceChild(frag, node);
+    } else if (node.nodeType === 1 && node.childNodes && !['SCRIPT','STYLE','IFRAME'].includes(node.tagName)) {
+      [...node.childNodes].forEach(wrapChars);
+    }
+  }
+  wrapChars(document.body);
+
+  // Troll face “ăn chữ”
+  const chars = document.querySelectorAll('.chaos-char');
+  let eaten = 0;
+  function spawnTroll() {
+    if (eaten >= chars.length) return;
     const img = document.createElement("img");
     img.src = trollURL;
     img.className = "troll-img";
-    img.style.top = Math.random() * window.innerHeight + "px";
-    img.style.left = Math.random() * window.innerWidth + "px";
+    const char = chars[eaten];
+    const rect = char.getBoundingClientRect();
+    img.style.top = rect.top + window.scrollY + "px";
+    img.style.left = rect.left + window.scrollX + "px";
     document.body.appendChild(img);
-  }
 
-  // Nền chớp màu
-  let colorStep = 0;
-  setInterval(() => {
-    document.body.style.backgroundColor = `hsl(${colorStep}, 100%, 50%)`;
-    colorStep += 30;
-  }, 200);
+    setTimeout(() => {
+      char.textContent = "TROLL";
+      char.style.color = "magenta";
+      char.style.fontSize = "1.4em";
+      img.remove();
+    }, 500);
+
+    eaten++;
+    setTimeout(spawnTroll, 200);
+  }
+  spawnTroll();
 })();
